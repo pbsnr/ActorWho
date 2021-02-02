@@ -63,6 +63,25 @@ from IPython.display import display
 import glob
 from pathlib import Path
 import os
+import math
+
+def face_distance_to_conf(face_distance, face_match_threshold=0.6):
+    if face_distance > face_match_threshold:
+        range = (1.0 - face_match_threshold)
+        linear_val = (1.0 - face_distance) / (range * 2.0)
+        return (linear_val)*100
+    else:
+        range = face_match_threshold
+        linear_val = 1.0 - (face_distance / (range * 2.0))
+        return (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2)))*100
+    
+def check_dist(distance):
+    distance = float(distance)
+    if distance == 0:
+        return (153, 27, 0)
+    if distance > 90:
+        return (19, 129, 12)
+    
 
 def recognition(image_path):
     # Load an image with an unknown face
@@ -84,22 +103,44 @@ def recognition(image_path):
         matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
 
         name = "Unknown"
+        acc = 0
+        acc_stred = '0'
 
         # Or instead, use the known face with the smallest distance to the new face
         face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+        dist = face_distances[0] - face_distances[1]
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
             name = known_face_names[best_match_index]
-
+            acc = format(face_distance_to_conf(dist), '.2f')
+            acc_stred = str(acc)
+    # Name :
         # Draw a box around the face using the Pillow module
         draw.rectangle(((left, top), (right, bottom)), outline=(153, 27, 0))
-
+        
         # Draw a label with a name below the face
         text_width, text_height = draw.textsize(name)
-        draw.rectangle(((left, bottom - text_height - 10), (right, bottom)), fill=(153, 27, 0), outline=(153, 27, 0))
+        draw.rectangle(((left, bottom - text_height - 10), (right, bottom)), fill=check_dist(acc), outline=check_dist(acc))
         draw.text((left + 6, bottom - text_height - 5), name, fill=(255, 255, 255, 255))
+        
+    # Accuracy :
+        if acc == 0:
+            # Draw a box around the face using the Pillow module
+            draw.rectangle(((left, top), (right, bottom)), outline=check_dist(acc))
 
+            # Draw a label with a name below the face
+            text_width, text_height = draw.textsize(acc_stred)
+            draw.rectangle(((right - 15 , top - text_height - 10), (right, top)), fill=check_dist(acc), outline=check_dist(acc))
+            draw.text((right - 15 + 6, top - text_height - 5), acc_stred, fill=(255, 255, 255, 255))
+        if acc != 0: 
+            # Draw a box around the face using the Pillow module
+            draw.rectangle(((left, top), (right, bottom)), outline=check_dist(acc))
 
+            # Draw a label with a name below the face
+            text_width, text_height = draw.textsize(acc_stred)
+            draw.rectangle(((right - 40 , top - text_height - 10), (right, top)), fill=check_dist(acc), outline=check_dist(acc))
+            draw.text((right - 40 + 6, top - text_height - 5), acc_stred, fill=(255, 255, 255, 255))
+    
     # Remove the drawing library from memory as per the Pillow docs
     del draw
 
