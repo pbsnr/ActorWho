@@ -4,11 +4,11 @@ let's detect the actors on screen !
 
 ## Installation
 
-1 Clone the repo
+1. Clone the git repo
    ```sh
    git clone https://github.com/pbsnr/ActorWho.git
    ```
-2. Install libraries packages
+2. Install lib packages
    ```sh
    pip install imdbpy
    pip install dlib
