@@ -1,69 +1,84 @@
+#library imports
 import requests
 import sys
 import os
-from bs4 import BeautifulSoup
-
-
-def get_pic(s , movie):
-    s2 = s.replace(' ','_')
-    s2 = 'https://fr.wikipedia.org/wiki/' + s2
-
-    req = requests.get(s2)
-    soup = BeautifulSoup(req.text, "lxml")
-
-    #with open('txt.html', 'w+') as file:
-        #file.write(str(soup))
-
-    for a in soup.find_all("div", {"class":"infobox_v3 large"}):
-        #print(str(a) + "\n")
-        pic = a.select("img")[0]
-        #print('https:' + str(pic['src']))
-        ext = str(pic['src']).split('.')[-1]
-        #print(ext)
-        pic = requests.get('https:' + str(pic['src']))
-        #print(pic)
-    os.mkdir('data/' + movie + '/' + s)
-
-    try:
-        
-        with open('data/' + movie + '/' + s + '/' + s + '.' + ext, 'wb+') as file:
-            #file.write(pic.text)
-            for block in pic.iter_content(1024):
-                    if not block:
-                        break
-                    file.write(block)
-        
-    except:
-        #os.remove(movie + '/' + s + '/' + s + '.' + ext)
-        os.rmdir('data/' + movie + '/' + s)
-                
-s = sys.argv[1]
-if not (os.path.isdir('data/' + s)):
-    os.mkdir('data/' + s)
-    s2 = s.replace(' ','+')
-    s2 = 'https://www.google.com/search?q=' + s + '+film+distribution'
-    req = requests.get(s2)
-    soup = BeautifulSoup(req.text, "lxml")
-    r = 0
-    print('Downloading pictures of ' + s  + '...')
-    for a in soup.find_all("a", {"class":"BVG0Nb"}):
-        #print(str(a) + "\n")
-        for actor in a.select("div", {"class":"BNeawe s3v9rd AP7Wnd"}):
-            if str(actor).count('div') < 3 and 'img' not in str(actor):
-                if r % 2 == 0:
-                    get_pic(actor.text, s)
-                #print(actor.text)
-                r += 1
-
-from PIL import Image
-import face_recognition
 import numpy as np
-from PIL import Image, ImageDraw
-from IPython.display import display
+import face_recognition
 import glob
-from pathlib import Path
-import os
 import math
+from imdb import IMDb
+from imdb import helpers
+from bs4 import BeautifulSoup
+from PIL import Image
+from PIL import Image, ImageDraw
+#from PIL import ImageGrab --> not working on Linux
+import pyscreenshot as ImageGrab
+from IPython.display import display
+from pathlib import Path
+from PIL import Image 
+from pynput import keyboard
+#import keyboard --> has to be used as root on Linux
+
+
+#----------------------------------------------------------------------
+#Get actors data
+#----------------------------------------------------------------------
+ia = IMDb()
+
+#clean headshot url
+def url_clean(url):
+    base, ext = os.path.splitext(url)
+    i = url.count('._')
+    s2 = url.split('._')[0]
+    url = s2 + ext
+    return url
+
+#get movie
+def get_movie(name):
+    movies = ia.search_movie(name)
+    id = movies[0].movieID
+    movie = ia.get_movie(id)
+    movie_title = movie['title']
+    return movie, movie_title
+
+name = sys.argv[1]
+movie, movie_title = get_movie(name)
+
+#get actors headshots
+if not (os.path.isdir('data/' + movie_title)):
+    os.mkdir('data/' + movie_title)
+    print('Downloading pictures of ' + movie_title  + '...')
+    for a in movie['cast']:
+        actor_id = a.personID
+        actor = ia.get_person(actor_id)
+        actor_name = a['name']
+        
+        try:
+            image = url_clean(actor['headshot'])
+            pic = requests.get(image)
+            ext = image.split('.')[-1]
+            try:
+                if pic.status_code == 200:
+                    os.mkdir('data/' + movie_title + '/' + actor_name)
+                    with open('data/' + movie_title + '/' + actor_name + '/' + actor_name + '.' + ext, 'wb') as f:
+                        f.write(pic.content)
+                        print('Downloaded picture of ' + actor_name)
+            except:
+                pass
+        except:
+            print("No picture found for " + actor_name)
+            pass
+    print("All pictures dowloaded !")
+else:
+    print("Pictures already downloaded !")
+
+
+
+
+#----------------------------------------------------------------------
+#Face recognition processing
+#----------------------------------------------------------------------
+
 
 def face_distance_to_conf(face_distance, face_match_threshold=0.6):
     if face_distance > face_match_threshold:
@@ -150,7 +165,7 @@ def recognition(image_path):
 known_face_encodings = []
 known_face_names = []
 
-for filename in glob.glob('data/' + s + '/**/*.jpg'): #assuming jpg files
+for filename in glob.glob('data/' + movie_title + '/**/*.jpg'): #assuming jpg files
     face_image = face_recognition.load_image_file(filename)
     if len(face_recognition.face_encodings(face_image)):
         face_encoding = face_recognition.face_encodings(face_image)[0]
@@ -162,10 +177,14 @@ for filename in glob.glob('data/' + s + '/**/*.jpg'): #assuming jpg files
     print('Learned encoding for', len(known_face_encodings), 'images.')
 
 
+
+#----------------------------------------------------------------------
+#Face recognition on screenshot
+#----------------------------------------------------------------------
+
 print('You can take a picture of your current movie...')
-from PIL import ImageGrab
-from PIL import Image 
-import keyboard
+
+'''
 while True:
     try:
         if keyboard.is_pressed('space'):
@@ -179,3 +198,17 @@ while True:
             pass
     except:
         break
+'''
+
+# The event listener will be running in this block
+with keyboard.Events() as events:
+    for event in events:
+        if event.key == keyboard.KeyCode(char='s'):
+            image = ImageGrab.grab(bbox =(0, 80, 1920, 1020))
+            image.save("screenshot/screenshot.png")
+            img = recognition("screenshot/screenshot.png")
+            img.save("screenshot_recognized/screenshot_recognized.png")
+            img.show() 
+            break
+        else:
+            pass
