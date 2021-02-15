@@ -35,7 +35,7 @@ results = face_recognition.compare_faces([biden_encoding], unknown_encoding)
 
 Show the accuracy of recognizing faces in a picture:
 
-![](https://i.ibb.co/0Fc2c5G/t-l-charger.png)
+![](https://i.ibb.co/QCfQf0K/t-l-charger.png)
 
 ```python
 def check_dist(distance):
