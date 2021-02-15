@@ -31,6 +31,22 @@ unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
 results = face_recognition.compare_faces([biden_encoding], unknown_encoding)
 ```
 
+#### Identify faces with accuracy 
+
+Show the accuracy of recognizing faces in a picture:
+
+![](https://i.ibb.co/0Fc2c5G/t-l-charger.png)
+
+```python
+def check_dist(distance):
+    distance = float(distance)
+    if distance == 0:
+        return (153, 27, 0)
+    if distance > 90:
+        return (19, 129, 12)
+  ```
+
+
 ## Installation
 
 1. Clone the git repo
