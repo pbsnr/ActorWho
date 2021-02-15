@@ -8,7 +8,7 @@ let's detect the actors on screen !
 
 Find all the faces that appear in a picture:
 
-![](https://cloud.githubusercontent.com/assets/896692/23625227/42c65360-025d-11e7-94ea-b12f28cb34b4.png)
+![](https://i.ibb.co/ggP8Fr0/readme.png)
 
 ```python
 import face_recognition
