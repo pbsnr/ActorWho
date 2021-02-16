@@ -200,9 +200,10 @@ def recog(movie_input, image_to_recog):
 
 
 
-@app.route('/')
-def home():
-  return render_template('index.html')
+@app.route('/<url>')
+def home(url):
+    print(url.replace("µ","/"))
+    return render_template('index.html')
 
 """@app.route('/recognize', methods=['POST'])
 def detect():
