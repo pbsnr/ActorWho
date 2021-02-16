@@ -24,6 +24,7 @@ from flask_cors import CORS
 import base64
 import io
 from PIL import Image
+from unidecode import unidecode
 
 
 from werkzeug.utils import secure_filename
@@ -202,7 +203,7 @@ def recog(movie_input, image_to_recog):
 
 @app.route('/<url>')
 def home(url):
-    print(url.replace("µ","/"))
+    print(url.replace("(","/"))
     return render_template('index.html')
 
 """@app.route('/recognize', methods=['POST'])
