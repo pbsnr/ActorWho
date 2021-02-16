@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Actor Who</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+</head>
+
+<body>
+
+<div class = "container">
+    <div class = "starter-template">
+        <h1>Actor Who</h1>
+        <p class = "lead"> Upload an image to see recognized character faces</p>
+    </div>
+</div>
+
+
+<div class="text-center">
+
+    <canvas width="1600" height="900" style="display: none"></canvas>
+    <div class="buttonholder">
+      <button id="takePhoto">Take Photo</button>
+    </div>
+
+    <canvas id="myCanvas" width="1000" height="563">
+      An alternative text describing what your canvas displays.
+    </canvas>
+
+</div>
+
+<div class="text-center">
+    <img src="{{ image_to_show }}">
+</div>
+
+</body>
+<script src="popup.js"></script>
+</html>
