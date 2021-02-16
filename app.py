@@ -1,5 +1,3 @@
-import os
-from flask import Flask,jsonify,request,render_template
 #library imports
 import requests
 import sys
@@ -8,18 +6,18 @@ import numpy as np
 import face_recognition
 import glob
 import math
+import json
 from imdb import IMDb
 from imdb import helpers
 from bs4 import BeautifulSoup
 from PIL import Image
 from PIL import Image, ImageDraw
-#from PIL import ImageGrab --> not working on Linux
 import pyscreenshot as ImageGrab
 from IPython.display import display
 from pathlib import Path
 from PIL import Image 
-#import keyboard --> has to be used as root on Linux
 from flask import Flask, flash, request, redirect, url_for
+from flask import jsonify ,render_template
 from flask_cors import CORS
 import base64
 import io
@@ -159,6 +157,55 @@ def check_dist(distance):
         return (19, 129, 12)
 
 #----------------------------------------------------------------------
+#Get actors info function
+#----------------------------------------------------------------------
+
+def get_info(a, actor, movie):
+    film = []
+    try:
+        for i in actor['filmography']['actress']:
+            film.append(i['title'])
+    except:
+        for i in actor['filmography']['actor']:
+            film.append(i['title'])
+            
+    try: name = actor['name']
+    except : name = " "
+        
+    try: currentRole = a.currentRole['name']
+    except : currentRole = " "
+    
+    try: birthName = actor['birth name']
+    except: birthName = " "
+        
+    try: birthDate = actor['birth date']
+    except: birthDate = " "
+    
+    try: birthPlace = actor['birth info']["birth place"]
+    except : birthPlace = " "
+        
+    try: height = actor['height']
+    except: height = " "
+    
+    try: bio = actor['biography'][0]
+    except : bio = " "
+        
+    try: trademark = actor['trade mark'][0]
+    except: trademark = " "
+    
+    try: trivia = actor['trivia']
+    except : trivia = " "
+    
+    listOfKeys = ["name", "current role", "birth name" , "birth date", \
+                  "birth place", "height", "biography", "trade mark" , "trivia", "filmography"]
+
+    listOfValues = [name, currentRole, birthName, birthDate, birthPlace, height, bio, trademark, trivia, film]
+    
+    dictOfWords = dict(zip(listOfKeys, listOfValues))
+    
+    return dictOfWords
+
+#----------------------------------------------------------------------
 #Recognition main function
 #----------------------------------------------------------------------
 
@@ -184,6 +231,9 @@ def recog(movie_input, image_to_recog):
                         with open('data/' + movie_title + '/' + actor_name + '/' + actor_name + '.' + ext, 'wb') as f:
                             f.write(pic.content)
                             print('Downloaded picture of ' + actor_name)
+                    dictInfo = get_info(a, actor, movie)
+                    with open('data/' + movie_title + '/' + actor_name + '/' + actor_name + '.json', "w") as outfile:  
+                        json.dump(dictInfo, outfile) 
                 except:
                     pass
             except:
@@ -198,7 +248,6 @@ def recog(movie_input, image_to_recog):
     img_done = recognition("screenshot_recog.png", movie_title)
     img_done.save("screenshot_recog.png")
     return img_done
-
 
 
 @app.route('/<url>')
