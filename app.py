@@ -23,6 +23,7 @@ import base64
 import io
 from PIL import Image
 from unidecode import unidecode
+import pickle as P
 
 
 from werkzeug.utils import secure_filename
@@ -60,10 +61,11 @@ def recognition(image_path, movie_title):
     known_face_encodings = []
     known_face_names = []
 
-    for filename in glob.glob('data/' + movie_title + '/**/*.jpg'): #assuming jpg files
-        face_image = face_recognition.load_image_file(filename)
-        if len(face_recognition.face_encodings(face_image)):
-            face_encoding = face_recognition.face_encodings(face_image)[0]
+    for filename in glob.glob('data/' + movie_title + '/**/*.pickle'): #assuming jpg files
+        #face_image = face_recognition.load_image_file(filename)
+            #face_encoding = face_recognition.face_encodings(face_image)[0]
+        with open(filename, 'rb') as f:
+            face_encoding = P.load(f)
             filename_str = str(filename)
             known_face_names.append(os.path.basename(str(Path(filename_str).parent)))
             # Create arrays of known face encodings and their names
@@ -210,6 +212,8 @@ def get_info(a, actor, movie):
 #----------------------------------------------------------------------
 
 def recog(movie_input, image_to_recog):
+    i = 0
+
     ia = IMDb()
     movie, movie_title = get_movie(movie_input, ia)
     #get actors headshots
@@ -217,6 +221,8 @@ def recog(movie_input, image_to_recog):
         os.mkdir('data/' + movie_title)
         print('Downloading pictures of ' + movie_title  + '...')
         for a in movie['cast']:
+            if i > 30:
+                break
             actor_id = a.personID
             actor = ia.get_person(actor_id)
             actor_name = a['name']
@@ -231,6 +237,14 @@ def recog(movie_input, image_to_recog):
                         with open('data/' + movie_title + '/' + actor_name + '/' + actor_name + '.' + ext, 'wb') as f:
                             f.write(pic.content)
                             print('Downloaded picture of ' + actor_name)
+                            i += 1
+                        face_image = face_recognition.load_image_file('data/' + movie_title + '/' + actor_name + '/' + actor_name + '.' + ext)
+                        if len(face_recognition.face_encodings(face_image)):
+                            face_encoding = face_recognition.face_encodings(face_image)[0]
+                            with open('data/'+ movie_title + '/' +actor_name+'/encoded.pickle', 'wb') as handle:
+                                print(face_encoding)
+                                P.dump(face_encoding, handle)
+
                     dictInfo = get_info(a, actor, movie)
                     with open('data/' + movie_title + '/' + actor_name + '/' + actor_name + '.json', "w") as outfile:  
                         json.dump(dictInfo, outfile) 
@@ -249,11 +263,31 @@ def recog(movie_input, image_to_recog):
     img_done.save("screenshot_recog.png")
     return img_done
 
+def url_to_title(link):
+    if 'netflix.com' in link:
+        page = requests.get(link)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        movies = soup.findAll('title')
+        title = str(movies)
+        title = title.replace('[<title>','')
+        title = title.replace('| Netflix</title>]','')
+        return title
+    elif 'primevideo.com' in link: 
+        page = requests.get(link)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        movies = soup.findAll('title')
+        title = str(movies[0])
+        title = title.replace('<title>Prime Video:','')
+        title = title.replace('</title>','')
+        return title
+    else:
+        return None
+    
+
 
 @app.route('/<url>')
 def home(url):
-    print(url.replace("(","/"))
-    return render_template('index.html')
+    return render_template('index.html', movie = url_to_title(url.replace("(","/")))
 
 """@app.route('/recognize', methods=['POST'])
 def detect():
@@ -262,14 +296,11 @@ def detect():
     # Read image
     image = recognition(file)"""
 
-
 @app.route('/upload', methods=['POST'])
 def upload():
     #file = Image.open('screenshot/images.jpg')
     #file = request.get_data()
     file = request.get_json(force=True)
-    print(file)
-
     
     decoded = (file["img"])
     decoded_done = base64.b64decode(decoded[22:])
@@ -282,7 +313,6 @@ def upload():
         img = recog(file["title"], image)
         img.show()
 
-    return "ok"
     return render_template('index.html', image_to_show=img, init=True)
 
 

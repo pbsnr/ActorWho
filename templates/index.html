@@ -12,6 +12,7 @@
     <div class = "starter-template">
         <h1>Actor Who</h1>
         <p class = "lead"> Upload an image to see recognized character faces</p>
+        <h3 id="title">{{ movie }}</h3>
     </div>
 </div>
 
@@ -58,7 +59,8 @@
     }).then((src) => {
        // do something with the source
        //console.log(src)
-       let data = JSON.stringify({img:src, title:"matrix"});
+       let t = document.getElementById("title").innerHTML;
+       let data = JSON.stringify({img:src, title:t});
        console.log("ok")
        var xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "POST", "http://127.0.0.1:4000/upload", false ); // false for synchronous request
