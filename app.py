@@ -31,10 +31,10 @@ from werkzeug.utils import secure_filename
 #UPLOAD_FOLDER = '/screenshot'
 #ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)
 #app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 #----------------------------------------------------------------------
 #Get actors data
@@ -96,6 +96,9 @@ def recognition(image_path, movie_title):
 
         # Or instead, use the known face with the smallest distance to the new face
         face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+        if face_distances.size == 0:
+            print("No actors found")
+
         dist = face_distances[0] - face_distances[1]
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
@@ -242,7 +245,7 @@ def recog(movie_input, image_to_recog):
                         if len(face_recognition.face_encodings(face_image)):
                             face_encoding = face_recognition.face_encodings(face_image)[0]
                             with open('data/'+ movie_title + '/' +actor_name+'/encoded.pickle', 'wb') as handle:
-                                print(face_encoding)
+
                                 P.dump(face_encoding, handle)
 
                     dictInfo = get_info(a, actor, movie)
@@ -258,9 +261,9 @@ def recog(movie_input, image_to_recog):
         print("Pictures already downloaded !")
 
 
-    image_to_recog.save("screenshot_recog.png")
-    img_done = recognition("screenshot_recog.png", movie_title)
-    img_done.save("screenshot_recog.png")
+    image_to_recog.save("static/screenshot_recog.png")
+    img_done = recognition("static/screenshot_recog.png", movie_title)
+    img_done.save("static/screenshot_recog.png")
     return img_done
 
 def url_to_title(link):
@@ -284,7 +287,6 @@ def url_to_title(link):
         return None
     
 
-
 @app.route('/<url>')
 def home(url):
     return render_template('index.html', movie = url_to_title(url.replace("(","/")))
@@ -295,6 +297,7 @@ def detect():
     file = request.files['image']
     # Read image
     image = recognition(file)"""
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -315,11 +318,22 @@ def upload():
 
     return render_template('index.html', image_to_show=img, init=True)
 
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True,
-            use_reloader=True,
+    app.run(debug=False,
+            use_reloader=False,
             port=4000)
