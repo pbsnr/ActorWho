@@ -314,7 +314,7 @@ def upload():
         #display(image)
         #image.show()
         img = recog(file["title"], image)
-        img.show()
+        #img.show()
 
     return render_template('index.html', image_to_show=img, init=True)
 
