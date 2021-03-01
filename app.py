@@ -79,7 +79,7 @@ def actor_json(actors_name, movie_title):
 def recognition(image_path, movie_title):
     known_face_encodings = []
     known_face_names = []
-	name_list = []
+    name_list = []
     for filename in glob.glob('data/' + movie_title + '/**/*.pickle'): #assuming jpg files
         #face_image = face_recognition.load_image_file(filename)
             #face_encoding = face_recognition.face_encodings(face_image)[0]
@@ -122,7 +122,7 @@ def recognition(image_path, movie_title):
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
             name = known_face_names[best_match_index]
-			name_list.append(name)
+            name_list.append(name)
             acc = format(face_distance_to_conf(dist), '.2f')
             acc_stred = str(acc)
     # Name :
