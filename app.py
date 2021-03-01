@@ -55,6 +55,22 @@ def get_movie(name, ia):
     movie = ia.get_movie(id)
     movie_title = movie['title']
     return movie, movie_title
+	
+
+
+#get actors data from json 
+
+def actor_json(actors_name, movie_title):
+	all_actors = {}
+	for i in actors_name:
+		all_actors[i] = {}
+		filename = "data/" + movie_title + "/"+i+"/"+i+".json"
+		with open(filename, 'rb') as f:
+			actor_data = json.load(f)			
+		all_actors[i] = actor_data
+	return all_actors
+			
+	
 
 
 def recognition(image_path, movie_title):
@@ -134,9 +150,9 @@ def recognition(image_path, movie_title):
     
     # Remove the drawing library from memory as per the Pillow docs
     del draw
-
+	
     # Display the resulting image
-    return(pil_image)
+    return(pil_image, actor_json(known_face_names, movie_title))
 
 
 #----------------------------------------------------------------------
@@ -262,9 +278,9 @@ def recog(movie_input, image_to_recog):
 
 
     image_to_recog.save("static/screenshot_recog.png")
-    img_done = recognition("static/screenshot_recog.png", movie_title)
+    img_done, actors_dict = recognition("static/screenshot_recog.png", movie_title)
     img_done.save("static/screenshot_recog.png")
-    return img_done
+    return img_done, actors_dict
 
 def url_to_title(link):
     if 'netflix.com' in link:
@@ -313,10 +329,10 @@ def upload():
         image = Image.open(fh)
         #display(image)
         #image.show()
-        img = recog(file["title"], image)
+        img, actors_dict = recog(file["title"], image)
         #img.show()
-
-    return render_template('index.html', image_to_show=img, init=True)
+	
+    return render_template('index.html', **actors_dict , image_to_show=img, init=True)
 
 @app.after_request
 def add_header(r):
