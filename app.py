@@ -68,7 +68,8 @@ def actor_json(actors_name, movie_title):
 		all_actors[i] = {}
 		filename = "data/" + movie_title + "/"+i+"/"+i+".json"
 		with open(filename, 'rb') as f:
-			actor_data = json.load(f)			
+			actor_data = json.load(f)
+			del actor_data['biography'], actor_data['trade mark'], actor_data['trivia'], actor_data['filmography']
 		all_actors[i] = actor_data
 	return all_actors
 			
@@ -78,7 +79,7 @@ def actor_json(actors_name, movie_title):
 def recognition(image_path, movie_title):
     known_face_encodings = []
     known_face_names = []
-	name_list = list()
+	name_list = []
     for filename in glob.glob('data/' + movie_title + '/**/*.pickle'): #assuming jpg files
         #face_image = face_recognition.load_image_file(filename)
             #face_encoding = face_recognition.face_encodings(face_image)[0]
@@ -359,3 +360,10 @@ if __name__ == '__main__':
     app.run(debug=False,
             use_reloader=False,
             port=4000)
+
+
+
+
+
+
+

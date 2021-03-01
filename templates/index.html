@@ -35,8 +35,14 @@
     <div class="text-center">
         <img id='img' src="{{ url_for('static', filename='screenshot_recog.png') }}" onerror="this.onerror=null; this.src='/static/none.png'">
     </div>
-    <div style="background-color: yellow">
-      {{ actors_dict }}
+    <div style="background-color: yellow"> 
+	{% for actor in actors_dict() %}
+		{% for a_value in actors_dict[actor] %}
+			{{ actors_dict[actor][a_value] }}
+		{% endfor %}
+	{% endfor %}
+
+
     </div>
 </body>
 
