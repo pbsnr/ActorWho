@@ -74,7 +74,7 @@
     let data = JSON.stringify({img:src, title:t});
     console.log("ok")
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "http://127.0.0.1:4000/upload", false ); // false for synchronous request
+    xmlHttp.open( "POST", "http://0.0.0.0:4000/upload", false ); // false for synchronous request
     xmlHttp.send( data );
     }).then((value) => {
       window.location.reload();

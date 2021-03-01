@@ -1,0 +1,15 @@
+face-recognition
+pynput
+pyscreenshot
+pillow
+requests
+numpy
+ipython
+glob2
+pathlib
+imdbpy
+bs4
+flask
+flask_cors
+unidecode
+Werkzeug
