@@ -12,7 +12,7 @@
 
     <div class="container">
         <div class="starter-template">
-            <h1>Actor Who</h1>
+            <h1>Actor Who sdfghjklgfd</h1>
             <p class="lead"> Upload an image to see recognized character faces</p>
             <h3 id="title">{{ movie }}</h3>
         </div>
@@ -35,7 +35,11 @@
     <div class="text-center">
         <img id='img' src="{{ url_for('static', filename='screenshot_recog.png') }}" onerror="this.onerror=null; this.src='/static/none.png'">
     </div>
+    <div style="background-color: yellow">
+      {{ actors_dict }}
+    </div>
 </body>
+
 <script>
     let changeColor = document.getElementById('takePhoto');
 

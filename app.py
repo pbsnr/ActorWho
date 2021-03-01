@@ -36,6 +36,8 @@ CORS(app)
 #app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+actors_dict = { 'test':'test1'}
+
 #----------------------------------------------------------------------
 #Get actors data
 #----------------------------------------------------------------------
@@ -305,7 +307,8 @@ def url_to_title(link):
 
 @app.route('/<url>')
 def home(url):
-    return render_template('index.html', movie = url_to_title(url.replace("(","/")))
+    print(actors_dict)
+    return render_template('index.html', movie = url_to_title(url.replace("(","/")), actors_dict=actors_dict)
 
 """@app.route('/recognize', methods=['POST'])
 def detect():
@@ -329,10 +332,12 @@ def upload():
         image = Image.open(fh)
         #display(image)
         #image.show()
+        global actors_dict
+        print(actors_dict)
         img, actors_dict = recog(file["title"], image)
         #img.show()
 	
-    return render_template('index.html', **actors_dict , image_to_show=img, init=True)
+        #return render_template('index.html', actors_dict=actors_dict , image_to_show=img, init=True)
 
 @app.after_request
 def add_header(r):
