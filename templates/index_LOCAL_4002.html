@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
@@ -94,25 +93,6 @@
               </div>
             </div>
           </div>
-=======
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-control" content="no-cache">
-    <meta http-equiv="Expires" content="-1">
-    <title>Actor Who</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
-</head>
-
-<body>
-
-    <div class="container">
-        <div class="starter-template">
-            <h1>Actor Who sdfghjklgfd</h1>
-            <p class="lead"> Upload an image to see recognized character faces</p>
-            <h3 id="title">{{ movie }}</h3>
->>>>>>> 6a7653602f29a6cbb8672de1695cb69690132066
         </div>
       </div>
     </section>
@@ -134,40 +114,8 @@
     </section>
   </body>
 
-<<<<<<< HEAD
   <script>
     let changeColor = document.getElementById('takescreenshot');
-=======
-    <div class="text-center">
-
-        <canvas width="1600" height="900" style="display: none;"></canvas>
-        <div class="buttonholder">
-            <button id="takePhoto">Take Photo</button>
-        </div>
-
-        <canvas id="myCanvas" width="1000" height="563" style="display:none">
-            An alternative text describing what your canvas displays.
-        </canvas>
-
-    </div>
-
-    <div class="text-center">
-        <img id='img' src="{{ url_for('static', filename='screenshot_recog.png') }}" onerror="this.onerror=null; this.src='/static/none.png'">
-    </div>
-    <div style="background-color: yellow"> 
-	{% for actor in actors_dict %}
-		{% for a_value in actors_dict[actor] %}
-			{{ actors_dict[actor][a_value] }}
-		{% endfor %}
-	{% endfor %}
-
-
-    </div>
-</body>
-
-<script>
-    let changeColor = document.getElementById('takePhoto');
->>>>>>> 6a7653602f29a6cbb8672de1695cb69690132066
 
     changeColor.onclick = function startCapture(){
     h = 563;
@@ -194,7 +142,7 @@
     let data = JSON.stringify({img:src, title:t});
     console.log("ok")
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "http://0.0.0.0:4000/upload", false ); // false for synchronous request
+    xmlHttp.open( "POST", "http://127.0.0.1:4000/upload", false ); // false for synchronous request
     xmlHttp.send( data );
     }).then((value) => {
       window.location.reload();

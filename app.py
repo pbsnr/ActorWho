@@ -36,6 +36,8 @@ CORS(app)
 #app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+actors_dict = { 'test':'test1'}
+
 #----------------------------------------------------------------------
 #Get actors data
 #----------------------------------------------------------------------
@@ -55,12 +57,29 @@ def get_movie(name, ia):
     movie = ia.get_movie(id)
     movie_title = movie['title']
     return movie, movie_title
+	
+
+
+#get actors data from json 
+
+def actor_json(actors_name, movie_title):
+	all_actors = {}
+	for i in actors_name:
+		all_actors[i] = {}
+		filename = "data/" + movie_title + "/"+i+"/"+i+".json"
+		with open(filename, 'rb') as f:
+			actor_data = json.load(f)
+			del actor_data['biography'], actor_data['trade mark'], actor_data['trivia'], actor_data['filmography']
+		all_actors[i] = actor_data
+	return all_actors
+			
+	
 
 
 def recognition(image_path, movie_title):
     known_face_encodings = []
     known_face_names = []
-
+    name_list = []
     for filename in glob.glob('data/' + movie_title + '/**/*.pickle'): #assuming jpg files
         #face_image = face_recognition.load_image_file(filename)
             #face_encoding = face_recognition.face_encodings(face_image)[0]
@@ -103,6 +122,7 @@ def recognition(image_path, movie_title):
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
             name = known_face_names[best_match_index]
+            name_list.append(name)
             acc = format(face_distance_to_conf(dist), '.2f')
             acc_stred = str(acc)
     # Name :
@@ -134,9 +154,9 @@ def recognition(image_path, movie_title):
     
     # Remove the drawing library from memory as per the Pillow docs
     del draw
-
+	
     # Display the resulting image
-    return(pil_image)
+    return(pil_image, actor_json(name_list, movie_title))
 
 
 #----------------------------------------------------------------------
@@ -262,9 +282,9 @@ def recog(movie_input, image_to_recog):
 
 
     image_to_recog.save("static/screenshot_recog.png")
-    img_done = recognition("static/screenshot_recog.png", movie_title)
+    img_done, actors_dict = recognition("static/screenshot_recog.png", movie_title)
     img_done.save("static/screenshot_recog.png")
-    return img_done
+    return img_done, actors_dict
 
 def url_to_title(link):
     if 'netflix.com' in link:
@@ -289,7 +309,8 @@ def url_to_title(link):
 
 @app.route('/<url>')
 def home(url):
-    return render_template('index.html', movie = url_to_title(url.replace("(","/")))
+    print(actors_dict)
+    return render_template('index.html', movie = url_to_title(url.replace("(","/")), actors_dict=actors_dict)
 
 """@app.route('/recognize', methods=['POST'])
 def detect():
@@ -313,10 +334,12 @@ def upload():
         image = Image.open(fh)
         #display(image)
         #image.show()
-        img = recog(file["title"], image)
+        global actors_dict
+        print(actors_dict)
+        img, actors_dict = recog(file["title"], image)
         #img.show()
-
-    return render_template('index.html', image_to_show=img, init=True)
+	
+        #return render_template('index.html', actors_dict=actors_dict , image_to_show=img, init=True)
 
 @app.after_request
 def add_header(r):
@@ -336,4 +359,12 @@ def add_header(r):
 if __name__ == '__main__':
     app.run(debug=False,
             use_reloader=False,
+            host="0.0.0.0",
             port=4000)
+
+
+
+
+
+
+
