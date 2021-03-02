@@ -338,6 +338,7 @@ def upload():
         print(actors_dict)
         img, actors_dict = recog(file["title"], image)
         #img.show()
+    return 'ok'
 	
         #return render_template('index.html', actors_dict=actors_dict , image_to_show=img, init=True)
 
