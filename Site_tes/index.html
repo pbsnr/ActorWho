@@ -7,10 +7,10 @@
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
     <title>Acceuil</title>
-    <link rel="stylesheet" href="static/nicepage.css" media="screen">
-<link rel="stylesheet" href="static/Acceuil.css" media="screen">
-    <script class="u-script" type="text/javascript" src="static/jquery.js" defer=""></script>
-    <script class="u-script" type="text/javascript" src="static/nicepage.js" defer=""></script>
+    <link rel="stylesheet" href="nicepage.css" media="screen">
+<link rel="stylesheet" href="Acceuil.css" media="screen">
+    <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+    <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
     <meta name="generator" content="Nicepage 3.7.2, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
     
@@ -56,12 +56,11 @@
       </div></header>
     <section class="u-clearfix u-image u-section-1" id="carousel_596c">
       <div class="u-clearfix u-sheet u-valign-top-xl u-sheet-1">
-        <!--img src="images/circlegradient2.png" alt="" class="u-image u-image-default u-image-1"-->
-        <img id='img' src="{{ url_for('static', filename='circlegradient2.png') }}" onerror="this.onerror=null; this.src='/static/none.png'" alt="" class="u-image u-image-default u-image-1">
+        <img src="images/circlegradient2.png" alt="" class="u-image u-image-default u-image-1">
         <h1 class="u-text u-text-body-alt-color u-title u-text-1">
           <span style="font-weight: 700;">Actor</span>&nbsp;<span style="font-weight: 700;">Who</span>
         </h1>
-        <p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-2">Upload an image to recognize actor's faces<br>
+        <p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-2">BLABLABLA<br>
         </p>
         <a href="2440102491" class="u-border-2 u-border-white u-btn u-button-style u-btn-1">Get Start</a>
       </div>
@@ -74,22 +73,14 @@
               <div class="u-align-left u-container-style u-layout-cell u-left-cell u-size-46 u-layout-cell-1">
                 <div class="u-container-layout u-valign-middle u-container-layout-1">
                   <h3 class="u-text u-text-1">Try this now!</h3>
-                  <p class="u-text u-text-2">&nbsp; Upload an image to recognize actor's faces<br>
-                  <h3 id="title">{{ movie }}</h3>
+                  <p class="u-text u-text-2">&nbsp; BLABLABLA<br>
                   </p>
                 </div>
-                
               </div>
               <div class="u-align-left u-container-style u-layout-cell u-right-cell u-size-14 u-layout-cell-2">
                 <div class="u-container-layout u-valign-middle u-container-layout-2">
-                  <a href="###" class="u-border-0 u-btn u-button-style u-palette-1-dark-1 u-btn-1"> <p class="u-text u-large-text2" id="takescreenshot">Take Screenshot</p> </a>
+                  <a href="###" class="u-border-0 u-btn u-button-style u-palette-1-dark-1 u-btn-1">Take Screenshot</a>
                 </div>
-                
-              </div>
-            </div>
-            <div class="u-layout-row" style="">
-              <div class="text-center">
-                <img id='img' src="{{ url_for('static', filename='screenshot_recog.png') }}" onerror="this.onerror=null; this.src='/static/none.png'">
               </div>
             </div>
           </div>
@@ -113,41 +104,4 @@
       </a>. 
     </section>
   </body>
-
-  <script>
-    let changeColor = document.getElementById('takescreenshot');
-
-    changeColor.onclick = function startCapture(){
-    h = 563;
-    w = 1000;
-    console.log(h, w)
-    navigator.mediaDevices.getDisplayMedia({ video: {width: w, height: h}, frameRate: { max: 1 }}).then((stream) => {
-    let track = stream.getVideoTracks()[0];
-    console.log(track)
-    let capture = new ImageCapture(track);
-    console.log(capture)
-    return capture.grabFrame();
-    }).then((bitmap) => {
-    //let canvas = document.createElement('canvas');
-    let canvas = document.getElementById("myCanvas");
-    //canvas.width = 3000
-    //canvas.height = 3000
-    let context = canvas.getContext('2d');
-    context.drawImage(bitmap, 0, 0, w, h)
-    return canvas.toDataURL();
-    }).then((src) => {
-    // do something with the source
-    //console.log(src)
-    let t = document.getElementById("title").innerHTML;
-    let data = JSON.stringify({img:src, title:t});
-    console.log("ok")
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "http://127.0.0.1:4000/upload", false ); // false for synchronous request
-    xmlHttp.send( data );
-    }).then((value) => {
-      window.location.reload();
-    }).catch(console.error)
-
-    }
-</script>
 </html>
