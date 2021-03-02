@@ -69,7 +69,7 @@ def actor_json(actors_name, movie_title):
 		filename = "data/" + movie_title + "/"+i+"/"+i+".json"
 		with open(filename, 'rb') as f:
 			actor_data = json.load(f)
-			del actor_data['biography'], actor_data['trade mark'], actor_data['trivia'], actor_data['filmography']
+			del actor_data['biography'], actor_data['trade mark'], actor_data['trivia'], actor_data['filmography'], actor_data['name']
 		all_actors[i] = actor_data
 	return all_actors
 			

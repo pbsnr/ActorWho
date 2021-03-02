@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
@@ -29,32 +28,7 @@
     <link rel="canonical" href="index.html">
     <meta property="og:url" content="index.html">
   </head>
-  <body data-home-page="Acceuil.html" data-home-page-title="Acceuil" class="u-body"><header class="u-clearfix u-header u-header" id="sec-4cb4"><div class="u-clearfix u-sheet u-sheet-1">
-        <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
-          <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px; font-weight: 700; text-transform: uppercase;">
-            <a class="u-button-style u-custom-active-border-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-color u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#">
-              <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu-hamburger"></use></svg>
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><symbol id="menu-hamburger" viewBox="0 0 16 16" style="width: 16px; height: 16px;"><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
-</symbol>
-</defs></svg>
-            </a>
-          </div>
-          <div class="u-custom-menu u-nav-container">
-            <ul class="u-nav u-spacing-30 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-base u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-grey-90 u-text-hover-grey-90" href="Acceuil.html" style="padding: 10px 0px;">Acceuil</a>
-</li></ul>
-          </div>
-          <div class="u-custom-menu u-nav-container-collapse">
-            <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
-              <div class="u-sidenav-overflow">
-                <div class="u-menu-close"></div>
-                <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Acceuil.html" style="padding: 10px 0px;">Acceuil</a>
-</li></ul>
-              </div>
-            </div>
-            <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
-          </div>
-        </nav>
-      </div></header>
+  <body data-home-page="Acceuil.html" data-home-page-title="Acceuil" class="u-body">
     <section class="u-clearfix u-image u-section-1" id="carousel_596c">
       <div class="u-clearfix u-sheet u-valign-top-xl u-sheet-1">
         <!--img src="images/circlegradient2.png" alt="" class="u-image u-image-default u-image-1"-->
@@ -64,7 +38,6 @@
         </h1>
         <p class="u-large-text u-text u-text-body-alt-color u-text-variant u-text-2">Upload an image to recognize actor's faces<br>
         </p>
-        <a href="2440102491" class="u-border-2 u-border-white u-btn u-button-style u-btn-1">Get Start</a>
       </div>
     </section>
     <section class="u-clearfix u-color-scheme-u11 u-color-style-multicolor-1 u-custom-color-1 u-section-2" id="sec-91ba">
@@ -90,85 +63,41 @@
             </div>
             <div class="u-layout-row" style="">
               <div class="text-center">
-                <img id='img' src="{{ url_for('static', filename='screenshot_recog.png') }}" onerror="this.onerror=null; this.src='/static/none.png'">
+                {% if not 'test' in actors_dict %}
+                  <img id='img' src="{{ url_for('static', filename='screenshot_recog.png') }}" onerror="this.onerror=null; this.src='/static/none.png'">
+                {% endif %}
               </div>
             </div>
           </div>
-=======
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-control" content="no-cache">
-    <meta http-equiv="Expires" content="-1">
-    <title>Actor Who</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
-</head>
-
-<body>
-
-    <div class="container">
-        <div class="starter-template">
-            <h1>Actor Who sdfghjklgfd</h1>
-            <p class="lead"> Upload an image to see recognized character faces</p>
-            <h3 id="title">{{ movie }}</h3>
->>>>>>> 6a7653602f29a6cbb8672de1695cb69690132066
         </div>
       </div>
+      </div>
+    <div style="display: flex;">
+    <ul style="margin-left: 20vw;">
+      {% if not 'test' in actors_dict %}
+        {% for actor in actors_dict %}
+        <h3>{{ actor }}</h3>
+          {% for a_value in actors_dict[actor] %}
+            <li style="margin-left: 5vw;">{{ a_value }} : {{ actors_dict[actor][a_value]}}</li>
+          {% endfor %}
+        {% endfor %}
+      {% endif %}
+    </ul>
+    </div>
     </section>
     
     
     <footer class="u-align-center u-clearfix u-footer u-grey-80 u-footer" id="sec-a4a3"><div class="u-clearfix u-sheet u-sheet-1">
-        <p class="u-small-text u-text u-text-variant u-text-1">&nbsp;&nbsp;</p>
-      </div></footer>
-    <section class="u-backlink u-clearfix u-grey-80">
-      <a class="u-link" href="https://nicepage.com/website-templates" target="_blank">
-        <span>Website Templates</span>
-      </a>
-      <p class="u-text">
-        <span>created with</span>
-      </p>
-      <a class="u-link" href="https://nicepage.com/" target="_blank">
-        <span>Website Builder Software</span>
-      </a>. 
-    </section>
-  </body>
-
-<<<<<<< HEAD
-  <script>
-    let changeColor = document.getElementById('takescreenshot');
-=======
-    <div class="text-center">
-
-        <canvas width="1600" height="900" style="display: none;"></canvas>
-        <div class="buttonholder">
-            <button id="takePhoto">Take Photo</button>
-        </div>
-
+      <canvas width="1600" height="900" style="display: none;"></canvas>
         <canvas id="myCanvas" width="1000" height="563" style="display:none">
             An alternative text describing what your canvas displays.
         </canvas>
+        <p class="u-small-text u-text u-text-variant u-text-1">&nbsp;&nbsp;</p>
+      </div></footer>
+  </body>
 
-    </div>
-
-    <div class="text-center">
-        <img id='img' src="{{ url_for('static', filename='screenshot_recog.png') }}" onerror="this.onerror=null; this.src='/static/none.png'">
-    </div>
-    <div style="background-color: yellow"> 
-	{% for actor in actors_dict %}
-		{% for a_value in actors_dict[actor] %}
-			{{ actors_dict[actor][a_value] }}
-		{% endfor %}
-	{% endfor %}
-
-
-    </div>
-</body>
-
-<script>
-    let changeColor = document.getElementById('takePhoto');
->>>>>>> 6a7653602f29a6cbb8672de1695cb69690132066
-
+  <script>
+    let changeColor = document.getElementById('takescreenshot');
     changeColor.onclick = function startCapture(){
     h = 563;
     w = 1000;
